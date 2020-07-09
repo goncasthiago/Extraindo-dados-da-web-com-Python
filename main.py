@@ -1,0 +1,20 @@
+import requests
+import json
+from bs4 import BeautifulSoup
+
+res = requests.get("https://www.uol.com.br/esporte/")
+res.encoding = 'utf-8'
+soup = BeautifulSoup(res.text, 'html.parser')
+posts = soup.find_all(class_ ='thumbnail-standard')
+
+all_posts = []
+for post in posts:
+    assunto = post.span.text
+    titulo = post.h2.text
+    imagem = post.img['src']
+    link = post.a['href']
+    all_posts.append({'assunto': assunto, 'titulo': titulo, 'imagem': imagem, 'link': link})
+
+
+with open('posts.json', 'w') as json_file:
+    json.dump(all_posts, json_file, indent=3, ensure_ascii=False)
